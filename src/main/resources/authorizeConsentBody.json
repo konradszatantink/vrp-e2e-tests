@@ -1,0 +1,5 @@
+{
+  "appUri": "https://my-customer-app.com/authentication",
+  "callbackUri": "http://my-customer-app.com/callback",
+  "originatingUserIp": "198.51.100.10"
+}

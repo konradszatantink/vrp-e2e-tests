@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+    id 'com.diffplug.spotless' version '6.10.0'
+    id 'io.freefair.lombok' version '6.5.1'
+}
+
+group = 'com.tink.performance'
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'io.gatling', name: 'gatling-core-java', version: '3.9.0'
+    implementation group: 'io.gatling', name: 'gatling-http-java', version: '3.9.0'
+    implementation group: 'io.gatling', name: 'gatling-app', version: '3.9.0'
+    implementation group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: '3.9.0'
+    implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
+    implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
+    constraints {
+        implementation('com.fasterxml.jackson.core:jackson-databind:2.14.0-rc1') {
+            because 'CVE-2020-36518 was found - https://github.com/advisories/GHSA-57j2-w4cx-62h2 and CVE-2022-42003'
+        }
+        implementation('io.netty:netty-codec-http:4.1.82.Final'){
+            because 'CVE-2022-24823 was found - https://debricked.com/app/en/vulnerability/242177?actualCommitId=1164384&commitId=1164384&repositoryId=34487'
+        }
+        implementation('org.scala-lang:scala-library:2.13.9'){
+            because 'CVE-2022-36944 was found - https://debricked.com/app/en/vulnerability/252639?actualCommitId=1287208&commitId=1287208&repositoryId=34487'
+        }
+    }
+}
+
+spotless {
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore', '*.gradle'
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+    java {
+        googleJavaFormat('1.15.0').reflowLongStrings()
+    }
+}
+
+task fatJar(type: Jar) {
+    group = 'build'
+    description = 'Generates "fat jar" containing all dependencies'
+
+    // Solves "META-INF/LICENSE is a duplicate" issue
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+    // Generate manifest
+    manifest {
+        attributes(
+                'Main-Class': 'com.tink.performance.GatlingEngine'
+        )
+    }
+
+    // Include dependencies
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+            // Exclude meta files from dependencies
+            {
+                exclude 'META-INF/MANIFEST.MF'
+                exclude 'META-INF/*.SF'
+                exclude 'META-INF/*.DSA'
+                exclude 'META-INF/*.RSA'
+            }
+
+    with jar
+}
