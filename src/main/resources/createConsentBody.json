@@ -1,0 +1,59 @@
+{
+  "providerId": "uk-demobank-open-banking-redirect",
+  "userId": "${userId}",
+  "financialService": {
+    "type": "MANDATE_PAYMENTS",
+    "subtype": "VRP_SWEEPING"
+  },
+  "financialServiceParameters": {
+    "userParameters": {
+      "merchantId": "9a1e5197-33ad-4f17-8338-0861a69ed1d0",
+      "controlParameters": {
+        "maximumIndividualAmount": {
+          "value": {
+            "unscaledValue": 199,
+            "scale": 2
+          },
+          "currency": "GBP"
+        },
+        "periodicLimits": [
+          {
+            "amount": {
+              "value": {
+                "unscaledValue": 299,
+                "scale": 2
+              },
+              "currency": "GBP"
+            },
+            "periodAlignment": "MANDATE",
+            "periodType": "DAY"
+          },
+          {
+            "amount": {
+              "value": {
+                "unscaledValue": 999,
+                "scale": 2
+              },
+              "currency": "GBP"
+            },
+            "periodAlignment": "MANDATE",
+            "periodType": "MONTH"
+          }
+        ],
+        "validFrom": "2022-07-25T10:10:38.850Z",
+        "validTo": "2022-12-25T10:10:38.850Z"
+      },
+      "payeeAccount": {
+        "number": "10000031510604",
+        "name": "Tom John Savings Account",
+        "type": "SORT_CODE"
+      },
+      "payerAccount": {
+        "number": "60092067037135",
+        "holderName": "Tom John",
+        "type": "SORT_CODE"
+      }
+    },
+    "version": "1.0.0"
+  }
+}
